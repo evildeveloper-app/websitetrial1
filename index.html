@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lucid — Track your money, without handing it to Big Tech</title>
+<meta name="description" content="Lucid is a private finance tracker for you and your family. Your data stays on your device or your own Google account — never on our servers.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#050506; --s1:#0C0D10; --s2:#131418; --s3:#1B1D22;
+    --line:rgba(255,255,255,.08); --line2:rgba(255,255,255,.14);
+    --t1:#F5F6F8; --t2:#9A9FA8; --t3:#5B606A;
+    --accent:#6C5CE7; --accent-soft:rgba(108,92,231,.14); --gold:#CBA45C; --gold-soft:rgba(203,164,92,.12);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--t1);font-family:'Inter',-apple-system,sans-serif;line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+  .word{font-family:'Poppins',sans-serif;font-weight:300;letter-spacing:.3em;color:var(--gold)}
+  .eyebrow{font-size:12px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
+  .muted{color:var(--t2)}
+  h2{font-size:clamp(28px,4.2vw,44px);font-weight:700;letter-spacing:-.025em;line-height:1.1}
+  .lead{font-size:17px;color:var(--t2);max-width:560px}
+
+  .btn{display:inline-flex;align-items:center;gap:9px;padding:15px 30px;border-radius:999px;font-weight:600;font-size:15px;cursor:pointer;border:1px solid transparent;transition:transform .12s,opacity .12s,background .15s}
+  .btn:active{transform:scale(.97)}
+  .btn-primary{background:var(--accent);color:#fff;box-shadow:0 8px 30px rgba(108,92,231,.35)}
+  .btn-primary:hover{opacity:.93}
+  .btn-ghost{background:transparent;border-color:var(--line2);color:var(--t1)}
+  .btn-ghost:hover{background:var(--s2)}
+  .btn-sm{padding:10px 20px;font-size:14px}
+  section{padding:clamp(64px,10vw,104px) 0}
+
+  /* header */
+  header{position:sticky;top:0;z-index:60;background:rgba(5,5,6,.7);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:66px}
+  .nav .word{font-size:19px}
+  .nav-links{display:flex;gap:30px;align-items:center;font-size:14px;color:var(--t2)}
+  .nav-links a:not(.btn):hover{color:var(--t1)}
+  @media(max-width:760px){.nav-links a:not(.btn){display:none}}
+
+  /* hero */
+  .hero{position:relative;text-align:center;padding:clamp(70px,12vw,120px) 0 clamp(48px,8vw,80px);overflow:hidden}
+  .hero::before{content:'';position:absolute;top:-10%;left:50%;transform:translateX(-50%);width:680px;height:520px;background:radial-gradient(ellipse at center,var(--gold-soft),transparent 62%);pointer-events:none}
+  .hero .word{font-size:clamp(15px,3vw,18px);display:inline-block;margin-bottom:30px;position:relative}
+  .hero h1{font-size:clamp(40px,7.5vw,72px);font-weight:700;letter-spacing:-.035em;line-height:1.03;position:relative;max-width:900px;margin:0 auto}
+  .hero h1 .g{color:var(--gold)}
+  .hero .lead{font-size:clamp(17px,2.5vw,21px);margin:26px auto 0;position:relative}
+  .cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:38px;position:relative}
+  .chips{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:30px;position:relative}
+  .chip{font-size:13px;color:var(--t2);background:var(--s1);border:1px solid var(--line);border-radius:999px;padding:7px 15px;display:inline-flex;gap:7px;align-items:center}
+  .chip svg{width:14px;height:14px;stroke:var(--gold);fill:none;stroke-width:2}
+
+  /* features */
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+  .card{background:var(--s1);border:1px solid var(--line);border-radius:18px;padding:28px;transition:border-color .15s,transform .15s}
+  .card:hover{border-color:var(--line2);transform:translateY(-2px)}
+  .card h3{font-size:17px;font-weight:600;margin-bottom:9px}
+  .card p{font-size:14.5px;color:var(--t2)}
+  .ico{width:44px;height:44px;border-radius:12px;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;margin-bottom:18px}
+  .ico svg{width:21px;height:21px;stroke:var(--accent);fill:none;stroke-width:1.7}
+
+  /* privacy panel */
+  .privacy{background:linear-gradient(160deg,var(--gold-soft),var(--s1));border:1px solid var(--gold-soft)}
+  .privacy .inner{display:grid;grid-template-columns:1.1fr 1fr;gap:48px;align-items:center}
+  @media(max-width:780px){.privacy .inner{grid-template-columns:1fr;gap:28px}}
+  .plist{list-style:none;display:grid;gap:16px}
+  .plist li{display:flex;gap:14px;align-items:flex-start}
+  .plist .dot{width:34px;height:34px;border-radius:10px;background:var(--gold-soft);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .plist .dot svg{width:17px;height:17px;stroke:var(--gold);fill:none;stroke-width:1.8}
+  .plist h4{font-size:15px;font-weight:600;margin-bottom:2px}
+  .plist p{font-size:13.5px;color:var(--t2)}
+
+  /* steps */
+  .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:20px;margin-top:40px;counter-reset:s}
+  .step{position:relative;padding-top:8px}
+  .step .n{width:38px;height:38px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-weight:700;display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+  .step h4{font-size:17px;margin-bottom:6px}
+  .step p{font-size:14.5px;color:var(--t2)}
+
+  /* pricing */
+  .toggle{display:inline-flex;background:var(--s2);border:1px solid var(--line);border-radius:999px;padding:4px;margin:24px 0 36px}
+  .toggle button{border:none;background:transparent;color:var(--t2);font-family:inherit;font-weight:600;font-size:14px;padding:10px 22px;border-radius:999px;cursor:pointer;transition:background .15s,color .15s}
+  .toggle button.on{background:var(--accent);color:#fff}
+  .price-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:20px;max-width:780px;margin:0 auto}
+  .plan{background:var(--s1);border:1px solid var(--line);border-radius:22px;padding:34px;text-align:left}
+  .plan.pro{border:1.5px solid var(--gold);background:linear-gradient(180deg,var(--gold-soft),var(--s1));position:relative}
+  .plan .badge{position:absolute;top:-13px;left:34px;background:var(--gold);color:#1c1608;font-size:11px;font-weight:700;letter-spacing:.08em;padding:5px 13px;border-radius:999px}
+  .plan .pname{font-size:13px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.12em}
+  .plan .amt{font-size:46px;font-weight:700;letter-spacing:-.02em;margin:12px 0 2px}
+  .plan .amt small{font-size:15px;color:var(--t3);font-weight:500}
+  .plan ul{list-style:none;margin:24px 0}
+  .plan li{display:flex;gap:11px;align-items:flex-start;font-size:14.5px;color:var(--t2);padding:8px 0}
+  .plan li svg{width:16px;height:16px;stroke:var(--gold);fill:none;stroke-width:2.2;flex-shrink:0;margin-top:4px}
+  .plan .btn{width:100%;justify-content:center;margin-top:8px}
+  .btn-gold{background:linear-gradient(160deg,#E0C079,#B8873B);color:#1c1608}
+  .btn-gold:hover{opacity:.94}
+
+  /* faq */
+  .faq{max-width:760px;margin:36px auto 0}
+  .q{border:1px solid var(--line);border-radius:14px;margin-bottom:12px;overflow:hidden;background:var(--s1)}
+  .q summary{list-style:none;cursor:pointer;padding:20px 22px;font-weight:600;font-size:16px;display:flex;justify-content:space-between;align-items:center;gap:16px}
+  .q summary::-webkit-details-marker{display:none}
+  .q summary .plus{color:var(--gold);font-size:22px;font-weight:400;transition:transform .2s;flex-shrink:0}
+  .q[open] summary .plus{transform:rotate(45deg)}
+  .q .a{padding:0 22px 20px;color:var(--t2);font-size:14.5px}
+
+  /* cta band */
+  .band{text-align:center;background:linear-gradient(160deg,var(--s2),var(--s1));border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .band .word{font-size:26px;margin-bottom:18px;display:inline-block}
+
+  footer{padding:44px 0;color:var(--t3);font-size:13px}
+  .footrow{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;align-items:center}
+  .footrow .word{font-size:16px}
+  .money{margin-top:14px;font-size:13px;color:var(--t2)}
+  .note{background:var(--s2);border:1px dashed var(--line2);border-radius:12px;padding:14px 16px;font-size:13px;color:var(--t2);max-width:640px;margin:26px auto 0}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <div class="word">LUCID</div>
+    <nav class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#privacy">Privacy</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#get" class="btn btn-primary btn-sm">Get started free</a>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap">
+    <div class="word">LUCID</div>
+    <h1>Track your money.<br>Without handing it to <span class="g">Big Tech.</span></h1>
+    <p class="lead">A private finance tracker for you and your family. Your data stays on your device or your own Google account — never on our servers, never sold, never seen.</p>
+    <div class="cta">
+      <a href="#get" class="btn btn-primary">Get started free →</a>
+      <a href="#privacy" class="btn btn-ghost">How your data is kept private</a>
+    </div>
+    <div class="chips">
+      <span class="chip"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>No account needed</span>
+      <span class="chip"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Works offline</span>
+      <span class="chip"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Free forever</span>
+      <span class="chip"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>No ads, no data selling</span>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="wrap">
+    <div class="eyebrow">What Lucid does</div>
+    <h2 style="margin:12px 0 34px">Everything you need. Nothing you don't.</h2>
+    <div class="grid">
+      <div class="card"><div class="ico"><svg viewBox="0 0 24 24"><path d="M12 1v22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><h3>Spending, income &amp; budgets</h3><p>Log it in seconds, set monthly budgets, and always know where your money went.</p></div>
+      <div class="card"><div class="ico"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-3-3.87"/><path d="M9 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M15.5 3.2a4 4 0 0 1 0 7.75"/></svg></div><h3>Made for families</h3><p>One shared ledger everyone can see, with a private profile for each family member.</p></div>
+      <div class="card"><div class="ico"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><h3>Import from your bank</h3><p>Bring in a CSV, OFX or QIF export. Duplicates are skipped automatically.</p></div>
+      <div class="card"><div class="ico"><svg viewBox="0 0 24 24"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3z"/></svg></div><h3>It learns your habits</h3><p>Lucid remembers how you categorize and fills it in for you — smarter every week.</p></div>
+      <div class="card"><div class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><h3>Private by design</h3><p>Your data lives on your device or your own Google Sheet. We can't see it — by design.</p></div>
+      <div class="card"><div class="ico"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div><h3>Goals that feel good</h3><p>Streaks, milestones and a monthly wrap-up keep you going — never guilt, never shame.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRIVACY -->
+<section id="privacy" class="privacy">
+  <div class="wrap inner">
+    <div>
+      <div class="eyebrow">Your data, your rules</div>
+      <h2 style="margin:12px 0 14px">Your money data never touches our servers.</h2>
+      <p class="lead">Most finance apps make you link your bank login, then store everything on their servers. Lucid doesn't. There's no Lucid database — because there's no Lucid server. Your data has nowhere else to go.</p>
+      <a href="#get" class="btn btn-primary" style="margin-top:24px">Get started free →</a>
+    </div>
+    <ul class="plist">
+      <li><span class="dot"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><div><h4>Stored where you choose</h4><p>Only on your device, or in a Google Sheet inside your own Google Drive.</p></div></li>
+      <li><span class="dot"><svg viewBox="0 0 24 24"><path d="M18.36 6.64A9 9 0 1 1 5.64 6.64"/><line x1="12" y1="2" x2="12" y2="12"/></svg></span><div><h4>No servers, no database</h4><p>We literally have nowhere to store your data — so we can't lose it or leak it.</p></div></li>
+      <li><span class="dot"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="4.9" y1="4.9" x2="19.1" y2="19.1"/></svg></span><div><h4>Never sold, never ads</h4><p>Your transactions are yours. We don't sell data and we don't run ads.</p></div></li>
+      <li><span class="dot"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span><div><h4>Leave anytime</h4><p>Export everything or delete it in one tap. No lock-in, no permission needed.</p></div></li>
+    </ul>
+  </div>
+</section>
+
+<!-- FAMILY -->
+<section id="family">
+  <div class="wrap">
+    <div class="eyebrow">For the whole family</div>
+    <h2 style="margin:12px 0 0">Share a budget without sharing your privacy.</h2>
+    <div class="steps">
+      <div class="step"><div class="n">1</div><h4>Create your family</h4><p>Set it up once and give it a name — it lives in your own Google account.</p></div>
+      <div class="step"><div class="n">2</div><h4>Share an invite link</h4><p>Send a private link (and optional password) to the people you want to include.</p></div>
+      <div class="step"><div class="n">3</div><h4>Track together</h4><p>Everyone logs to one shared ledger, each with their own private profile and PIN.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing" style="background:var(--s1);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+  <div class="wrap" style="text-align:center">
+    <div class="eyebrow">Pricing</div>
+    <h2 style="margin:12px 0 4px">Free to use. Upgrade only if you want more.</h2>
+    <div class="toggle">
+      <button id="tg-m" class="on" onclick="setBilling('m')">Monthly</button>
+      <button id="tg-y" onclick="setBilling('y')">Yearly · save 33%</button>
+    </div>
+    <div class="price-grid">
+      <div class="plan">
+        <div class="pname">Free</div>
+        <div class="amt">$0</div>
+        <div class="muted" style="font-size:13px">Forever, no account</div>
+        <ul>
+          <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Unlimited spending &amp; income</li>
+          <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Accounts, budgets &amp; goals</li>
+          <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Bank import (CSV / OFX / QIF)</li>
+          <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Smart auto-categorization</li>
+          <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Up to 2 family members</li>
+        </ul>
+        <a href="#get" class="btn btn-ghost">Get started free</a>
+      </div>
+      <div class="plan pro">
+        <div class="badge">LUCID PRO</div>
+        <div class="pname">Pro</div>
+        <div class="amt"><span id="price">$2.99</span><small id="per">/month</small></div>
+        <div class="muted" style="font-size:13px" id="pnote">Billed monthly</div>
+        <ul>
+          <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Everything in Free, plus:</li>
+          <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>AI categorizing for new shops</li>
+          <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Instant bank-text sync (Android)</li>
+          <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Receipt scanning</li>
+          <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Unlimited family &amp; full history</li>
+        </ul>
+        <a id="buy" href="#get" class="btn btn-gold">Upgrade in the app</a>
+      </div>
+    </div>
+    <div class="note">Pro is bought and unlocked inside the app — nothing to buy here. Start free first; upgrade whenever you're ready.</div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="wrap">
+    <div class="eyebrow" style="text-align:center;display:block">FAQ</div>
+    <h2 style="margin:12px 0 0;text-align:center">The questions that actually matter.</h2>
+    <div class="faq">
+      <details class="q"><summary>Can you see my transactions?<span class="plus">+</span></summary><div class="a">No. There's no Lucid server and no database. Your data is stored only on your device or in a Google Sheet inside your own Google account. We have no way to see it.</div></details>
+      <details class="q"><summary>How do you make money, then?<span class="plus">+</span></summary><div class="a">Only from the optional Lucid Pro upgrade — never from your data. No ads, no selling information, no hidden data deals. If you never upgrade, Lucid stays free forever.</div></details>
+      <details class="q"><summary>Do I have to link my bank login?<span class="plus">+</span></summary><div class="a">Never. Lucid doesn't ask for bank passwords. You add transactions yourself, or import a file your bank lets you download. Your banking credentials never touch Lucid.</div></details>
+      <details class="q"><summary>What happens if I stop using it?<span class="plus">+</span></summary><div class="a">Nothing is held hostage. You can export everything, or delete it, in one tap. Because the data is in your own account, it's always yours to take with you.</div></details>
+      <details class="q"><summary>Is it really free?<span class="plus">+</span></summary><div class="a">Yes. The core app — tracking, budgets, goals, family sharing, bank import — is free forever. Pro is an optional upgrade for AI features and instant sync.</div></details>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section id="get" class="band">
+  <div class="wrap">
+    <div class="word">LUCID</div>
+    <h2 style="margin-bottom:10px">Your money, in focus.</h2>
+    <p class="lead" style="margin:0 auto 30px">Start tracking in under a minute — free, private, no account needed.</p>
+    <a href="APP_URL" class="btn btn-primary">Get started free →</a>
+    <div style="margin-top:16px;font-size:13px;color:var(--t3)">Works on iPhone, Android, and any browser.</div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footrow">
+      <div class="word">LUCID</div>
+      <div class="muted">Private money, in focus.</div>
+      <div>© <span id="yr"></span> Lucid</div>
+    </div>
+    <div class="money">Lucid is free. We make money only from the optional Pro upgrade — never from your data.</div>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('yr').textContent = new Date().getFullYear();
+  /* ===== EDIT THIS with your live app link ===== */
+  var APP_URL = 'https://evildeveloper-app.github.io/';
+  /* ============================================= */
+  document.querySelectorAll('a[href="APP_URL"]').forEach(function(a){ a.href = APP_URL; });
+  var PRICE_M = '$2.99', PRICE_Y = '$24';
+  function setBilling(mode){
+    var m = mode === 'm';
+    document.getElementById('tg-m').classList.toggle('on', m);
+    document.getElementById('tg-y').classList.toggle('on', !m);
+    document.getElementById('price').textContent = m ? PRICE_M : PRICE_Y;
+    document.getElementById('per').textContent = m ? '/month' : '/year';
+    document.getElementById('pnote').textContent = m ? 'Billed monthly' : 'Billed yearly · best value';
+  }
+</script>
+</body>
+</html>
