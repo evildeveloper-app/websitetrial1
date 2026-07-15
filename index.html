@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lucid. Track your money, without handing it to Big Tech</title>
+<meta name="description" content="A private finance tracker for you and your family. Your data stays on your device or in your own Google account. Never on our servers, never sold, never seen.">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Lucid. Track your money, without handing it to Big Tech">
+<meta property="og:description" content="A private finance tracker for you and your family. No bank logins, no servers, no data selling. Free forever.">
+<meta property="og:image" content="https://raw.githubusercontent.com/lucid-app/lucid/main/og-image.png">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Lucid. Track your money, without handing it to Big Tech">
+<meta name="twitter:description" content="A private finance tracker for you and your family. No bank logins, no servers, no data selling. Free forever.">
+
+<!-- Favicon: gold aperture mark on near-black, matching the brand -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230A0A0C'/%3E%3Ccircle cx='32' cy='32' r='19' fill='none' stroke='%23CBA45C' stroke-width='4'/%3E%3Ccircle cx='32' cy='32' r='6.5' fill='%23CBA45C'/%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg: #08080a;
+    --bg-alt: #0d0d10;
+    --surface-1: #131316;
+    --surface-2: #18181c;
+    --surface-3: #202024;
+    --border: rgba(203,164,92,0.14);
+    --border-strong: rgba(203,164,92,0.32);
+    --text: #f2efe9;
+    --text-dim: #a9a6a0;
+    --text-mute: #706e6a;
+    --gold: #cba45c;
+    --gold-light: #e6cb92;
+    --gold-dark: #8f6e39;
+    --teal: #3EB48F;   /* success / growth */
+    --blue: #5E9BD6;   /* clarity / trust */
+    --rose: #D97A6C;   /* warmth / alerts */
+    --radius-sm: 10px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+    --shadow-gold: 0 8px 30px -8px rgba(203,164,92,0.35);
+    --max: 1160px;
+  }
+
+  *,*::before,*::after{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior: auto; }
+    *,*::before,*::after{ animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+  }
+
+  body{
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  img,svg{ display:block; max-width: 100%; }
+
+  a{ color: inherit; }
+
+  h1,h2,h3{ font-family: 'Inter', sans-serif; margin: 0; letter-spacing: -0.01em; }
+
+  p{ margin: 0; }
+
+  ul{ margin:0; padding:0; list-style:none; }
+
+  .wrap{
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* Skip link */
+  .skip-link{
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    background: var(--gold);
+    color: #0a0a0c;
+    padding: 12px 20px;
+    border-radius: 0 0 8px 0;
+    font-weight: 600;
+    z-index: 1000;
+  }
+  .skip-link:focus{ left: 0; }
+
+  :focus-visible{
+    outline: 2px solid var(--gold-light);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* Wordmark */
+  .wordmark{
+    font-family: 'Poppins', sans-serif;
+    font-weight: 300;
+    letter-spacing: 0.22em;
+    color: var(--gold);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    white-space: nowrap;
+  }
+  .wordmark .dot{
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 10px 1px rgba(203,164,92,0.6);
+  }
+
+  /* Header */
+  header.site{
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(8,8,10,0.78);
+    backdrop-filter: saturate(140%) blur(14px);
+    -webkit-backdrop-filter: saturate(140%) blur(14px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-row{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 76px;
+    gap: 20px;
+  }
+  .nav-links{
+    display: none;
+    align-items: center;
+    gap: 36px;
+    font-size: 0.94rem;
+    color: var(--text-dim);
+  }
+  .nav-links a{ text-decoration:none; transition: color .2s ease; }
+  .nav-links a:hover{ color: var(--gold-light); }
+  .nav-cta-wrap{ display:flex; align-items:center; gap: 16px; }
+  .nav-wordmark{ font-size: 1.15rem; }
+
+  @media (min-width: 800px){
+    .nav-links{ display:flex; }
+  }
+
+  /* Buttons */
+  .btn{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.98rem;
+    padding: 13px 26px;
+    border-radius: 999px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    text-decoration: none;
+    transition: transform .18s ease, box-shadow .25s ease, background .2s ease, border-color .2s ease, color .2s ease;
+    white-space: nowrap;
+  }
+  .btn:active{ transform: translateY(1px); }
+
+  .btn-primary{
+    background: linear-gradient(180deg, var(--gold-light), var(--gold));
+    color: #14100a;
+    box-shadow: var(--shadow-gold);
+  }
+  .btn-primary:hover{
+    box-shadow: 0 10px 34px -6px rgba(203,164,92,0.55);
+    transform: translateY(-1px);
+  }
+
+  .btn-sm{
+    padding: 9px 20px;
+    font-size: 0.88rem;
+  }
+
+  .btn-secondary{
+    background: transparent;
+    color: var(--text);
+    border-color: var(--border-strong);
+  }
+  .btn-secondary:hover{
+    border-color: var(--gold);
+    color: var(--gold-light);
+  }
+
+  .btn-ghost{
+    background: var(--surface-2);
+    color: var(--text-dim);
+    border-color: var(--border);
+  }
+  .btn-ghost:hover{
+    color: var(--text);
+    border-color: var(--border-strong);
+  }
+
+  /* Hero */
+  .hero{
+    position: relative;
+    padding: 96px 0 88px;
+    overflow: hidden;
+    text-align: center;
+  }
+  .hero::before{
+    content: "";
+    position: absolute;
+    top: -220px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1100px;
+    height: 700px;
+    background: radial-gradient(closest-side, rgba(203,164,92,0.18), rgba(203,164,92,0.05) 55%, transparent 75%);
+    pointer-events: none;
+  }
+  .hero-inner{ position: relative; max-width: 780px; margin: 0 auto; }
+
+  .eyebrow{
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    background: rgba(203,164,92,0.08);
+    border: 1px solid var(--border);
+    padding: 7px 16px;
+    border-radius: 999px;
+    margin-bottom: 28px;
+  }
+
+  .hero h1{
+    font-size: clamp(2.1rem, 4.6vw + 0.8rem, 3.6rem);
+    font-weight: 700;
+    line-height: 1.12;
+    letter-spacing: -0.02em;
+  }
+  .hero h1 .accent{ color: var(--gold); }
+
+  .hero-sub{
+    margin: 26px auto 0;
+    max-width: 600px;
+    color: var(--text-dim);
+    font-size: clamp(1rem, 0.4vw + 0.95rem, 1.15rem);
+  }
+
+  .hero-actions{
+    margin-top: 40px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  .trust-chips{
+    margin-top: 44px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px 12px;
+  }
+  .chip{
+    font-size: 0.84rem;
+    color: var(--text-dim);
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    padding: 8px 16px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .chip::before{
+    content: "";
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--chip-c, var(--gold));
+    flex: none;
+  }
+
+
+  /* Section scaffolding */
+  section{ padding: 92px 0; }
+  .section-head{
+    max-width: 620px;
+    margin: 0 auto 52px;
+    text-align: center;
+  }
+  .section-label{
+    font-size: 0.8rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 600;
+    margin-bottom: 14px;
+    display: block;
+  }
+  .section-head h2{
+    font-size: clamp(1.6rem, 2vw + 1rem, 2.3rem);
+    font-weight: 700;
+  }
+  .section-head p{
+    margin-top: 16px;
+    color: var(--text-dim);
+    font-size: 1.02rem;
+  }
+
+  /* Features */
+  .feature-grid{
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+  @media (min-width: 640px){
+    .feature-grid{ grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (min-width: 980px){
+    .feature-grid{ grid-template-columns: repeat(3, 1fr); }
+  }
+  .feature-card{
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 28px 26px;
+    transition: border-color .25s ease, transform .25s ease, background .25s ease;
+  }
+  .feature-card:hover{
+    border-color: var(--border-strong);
+    transform: translateY(-3px);
+    background: var(--surface-2);
+  }
+  .feature-icon{
+    width: 42px; height: 42px;
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--fi-c, var(--gold)) 11%, transparent);
+    border: 1px solid color-mix(in srgb, var(--fi-c, var(--gold)) 26%, transparent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 18px;
+    color: var(--fi-c, var(--gold));
+  }
+  /* Colour is semantic, not decorative:
+     gold = money & control · teal = growth & wins · blue = clarity & privacy · rose = leaks & stress */
+  .c-money{ --fi-c:var(--gold); --why-c:var(--gold); --step-c:var(--gold); --stat-c:var(--gold); --chip-c:var(--gold); }
+  .c-growth{ --fi-c:var(--teal); --why-c:var(--teal); --step-c:var(--teal); --stat-c:var(--teal); --chip-c:var(--teal); }
+  .c-clarity{ --fi-c:var(--blue); --why-c:var(--blue); --step-c:var(--blue); --stat-c:var(--blue); --chip-c:var(--blue); }
+  .c-leak{ --fi-c:var(--rose); --why-c:var(--rose); --step-c:var(--rose); --stat-c:var(--rose); --chip-c:var(--rose); }
+  .feature-card h3{
+    font-size: 1.06rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .feature-card p{
+    color: var(--text-dim);
+    font-size: 0.95rem;
+  }
+
+  /* Privacy panel */
+  .privacy-section{
+    background: var(--bg-alt);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .privacy-panel{
+    position: relative;
+    background: linear-gradient(160deg, var(--surface-2), var(--surface-1));
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-lg);
+    padding: 52px 32px;
+    overflow: hidden;
+  }
+  .privacy-panel::before{
+    content:"";
+    position:absolute;
+    top: -140px; right: -120px;
+    width: 420px; height: 420px;
+    background: radial-gradient(closest-side, rgba(203,164,92,0.16), transparent 70%);
+    pointer-events:none;
+  }
+  .privacy-head{
+    position: relative;
+    max-width: 640px;
+    margin: 0 auto 40px;
+    text-align: center;
+  }
+  .privacy-head h2{
+    font-size: clamp(1.6rem, 2vw + 1rem, 2.2rem);
+    font-weight: 700;
+  }
+  .privacy-head p{
+    margin-top: 18px;
+    color: var(--text-dim);
+    font-size: 1.02rem;
+  }
+  .privacy-points{
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    max-width: 880px;
+    margin: 0 auto;
+  }
+  @media (min-width: 720px){
+    .privacy-points{ grid-template-columns: repeat(2, 1fr); }
+  }
+  .privacy-point{
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .privacy-point .mark{
+    flex: none;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: rgba(203,164,92,0.12);
+    border: 1px solid var(--border-strong);
+    color: var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .privacy-point h3{
+    font-size: 0.98rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .privacy-point p{
+    color: var(--text-dim);
+    font-size: 0.92rem;
+  }
+
+  /* Family sharing steps */
+  .steps{
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 28px;
+    max-width: 900px;
+    margin: 0 auto;
+    counter-reset: step;
+  }
+  @media (min-width: 800px){
+    .steps{ grid-template-columns: repeat(3, 1fr); }
+  }
+  .step{
+    position: relative;
+    text-align: center;
+    padding: 0 12px;
+  }
+  .step .num{
+    width: 46px; height: 46px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    border: 1px solid var(--border-strong);
+    background: var(--surface-1);
+    color: var(--gold);
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.05rem;
+  }
+  .step h3{ font-size: 1.02rem; font-weight: 600; margin-bottom: 8px; }
+  .step p{ color: var(--text-dim); font-size: 0.93rem; }
+
+  /* Pricing */
+  .toggle{
+    display: inline-flex;
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 4px;
+    margin: 0 auto 44px;
+    gap: 4px;
+  }
+  .toggle button{
+    border: none;
+    background: transparent;
+    color: var(--text-dim);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 9px 20px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background .2s ease, color .2s ease;
+  }
+  .toggle button[aria-pressed="true"]{
+    background: var(--gold);
+    color: #14100a;
+  }
+  .toggle-wrap{ display:flex; justify-content:center; }
+
+  .pricing-grid{
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 22px;
+    max-width: 780px;
+    margin: 0 auto;
+  }
+  @media (min-width: 700px){
+    .pricing-grid{ grid-template-columns: repeat(2, 1fr); }
+  }
+  .price-card{
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 34px 30px;
+    display: flex;
+    flex-direction: column;
+  }
+  .price-card.pro{
+    background: linear-gradient(160deg, var(--surface-2), var(--surface-1));
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow-gold);
+    position: relative;
+  }
+  .price-card h3{
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .price-card .price{
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+    font-size: 2.1rem;
+    color: var(--text);
+    margin: 14px 0 4px;
+  }
+  .price-card .price .unit{
+    font-size: 0.95rem;
+    color: var(--text-mute);
+    font-family: 'Inter', sans-serif;
+  }
+  .price-card .price-note{
+    color: var(--text-mute);
+    font-size: 0.85rem;
+    margin-bottom: 22px;
+  }
+  .price-card ul{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .price-card li{
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 0.92rem;
+    color: var(--text-dim);
+  }
+  .price-card li svg{ flex: none; margin-top: 3px; color: var(--gold); }
+  .price-card .btn{ margin-top: auto; }
+  .price-fineprint{
+    text-align: center;
+    color: var(--text-mute);
+    font-size: 0.85rem;
+    margin-top: 30px;
+  }
+
+  /* FAQ */
+  .faq-list{ max-width: 760px; margin: 0 auto; display:flex; flex-direction:column; gap: 12px; }
+  details.faq-item{
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 4px 22px;
+    transition: border-color .2s ease;
+  }
+  details.faq-item[open]{ border-color: var(--border-strong); }
+  details.faq-item summary{
+    list-style: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 20px 0;
+    font-weight: 600;
+    font-size: 1rem;
+  }
+  details.faq-item summary::-webkit-details-marker{ display:none; }
+  .faq-icon{
+    flex: none;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    border: 1px solid var(--border-strong);
+    color: var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform .25s ease;
+  }
+  details.faq-item[open] .faq-icon{ transform: rotate(45deg); }
+  .faq-body{
+    color: var(--text-dim);
+    font-size: 0.95rem;
+    padding-bottom: 22px;
+    max-width: 640px;
+  }
+
+  /* Final CTA band */
+  .final-cta{
+    position: relative;
+    text-align: center;
+    padding: 100px 0 96px;
+    overflow: hidden;
+    background: var(--bg-alt);
+    border-top: 1px solid var(--border);
+  }
+  .final-cta::before{
+    content:"";
+    position:absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    width: 900px; height: 500px;
+    background: radial-gradient(closest-side, rgba(203,164,92,0.14), transparent 70%);
+    pointer-events:none;
+  }
+  .final-cta .wordmark{ font-size: 2rem; justify-content:center; position:relative; }
+  .final-cta h2{
+    position: relative;
+    margin-top: 22px;
+    font-size: clamp(1.6rem, 2.4vw + 1rem, 2.4rem);
+    font-weight: 700;
+  }
+  .final-cta p{
+    position: relative;
+    margin-top: 14px;
+    color: var(--text-dim);
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .final-cta .btn{ position: relative; margin-top: 34px; }
+  .final-cta .platforms{
+    position: relative;
+    margin-top: 20px;
+    font-size: 0.85rem;
+    color: var(--text-mute);
+  }
+
+  /* Footer */
+  footer.site{
+    padding: 48px 0 40px;
+    text-align: center;
+  }
+  footer.site .wordmark{ font-size: 1.1rem; justify-content:center; }
+  footer.site .tagline{
+    margin-top: 12px;
+    color: var(--text-mute);
+    font-size: 0.9rem;
+  }
+  footer.site .legal{
+    margin-top: 24px;
+    color: var(--text-mute);
+    font-size: 0.82rem;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+  }
+  footer.site .copyright{ margin-top: 10px; }
+
+  /* ── Hero: two-column with product mockup, both columns centered ── */
+  .hero{ text-align:center; }
+  .hero-copy{ margin:0 auto; }
+  .hero-copy .hero-sub{ margin-left:auto; margin-right:auto; }
+  .hero-copy .hero-actions, .hero-copy .trust-chips{ justify-content:center; }
+  .hero-cols{ display:grid; grid-template-columns:1fr; gap:56px; align-items:center; position:relative; }
+  .hero-copy{ max-width:600px; }
+  @media (min-width: 960px){
+    .hero-cols{ grid-template-columns: 1.1fr .9fr; }
+  }
+  @media (max-width: 959px){
+    .hero-copy{ margin:0 auto; text-align:center; }
+    .hero-copy .hero-actions, .hero-copy .trust-chips{ justify-content:center; }
+  }
+  .hero-visual{ position:relative; display:flex; justify-content:center; align-items:center; margin:0 auto; }
+  .phone{
+    position:relative; width:290px; border-radius:42px; padding:14px 14px 12px;
+    background:#0c0c0f;
+    border:1px solid rgba(203,164,92,.22);
+    box-shadow:0 0 0 6px #050506, 0 40px 80px -20px rgba(0,0,0,.8), 0 0 80px -30px rgba(203,164,92,.35);
+    transform:rotate(2.5deg);
+    z-index:1;
+  }
+  .phone-notch{ width:110px; height:22px; border-radius:0 0 16px 16px; background:#050506; margin:-14px auto 10px; }
+  .ph-top{ display:flex; justify-content:space-between; align-items:center; padding:2px 6px 12px; }
+  .ph-greet{ font-size:10px; color:var(--text-mute); }
+  .ph-name{ font-size:16px; font-weight:800; letter-spacing:-.4px; }
+  .ph-mark{ color:var(--gold); display:flex; }
+  .ph-hero{
+    border-radius:20px; padding:16px 16px 14px; margin-bottom:14px;
+    background:linear-gradient(155deg,#23204a 0%,#2c2866 46%,#1e3a6e 100%);
+    box-shadow:0 10px 30px -10px rgba(44,40,102,.7);
+  }
+  .ph-lab{ font-size:9px; text-transform:uppercase; letter-spacing:1.4px; color:rgba(255,255,255,.65); }
+  .ph-amt{ font-size:27px; font-weight:800; letter-spacing:-1px; color:#fff; margin:2px 0; }
+  .ph-per{ font-size:10px; color:rgba(255,255,255,.55); margin-bottom:12px; }
+  .ph-stats{ display:flex; gap:8px; }
+  .ph-stats>div{ flex:1; background:rgba(255,255,255,.09); border-radius:11px; padding:7px 9px; font-size:9.5px; color:rgba(255,255,255,.75); }
+  .ph-stats strong{ display:block; color:#fff; font-size:12.5px; margin-top:1px; }
+  .ph-stats .dot{ display:inline-block; width:5px; height:5px; border-radius:50%; margin-right:4px; vertical-align:1px; }
+  .ph-stats .dot.inc{ background:#4ade80; } .ph-stats .dot.exp{ background:#f87171; }
+  .ph-sec{ font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:1.3px; color:var(--text-mute); padding:2px 6px 8px; }
+  .ph-tx{ display:flex; align-items:center; gap:10px; padding:8px 6px; border-top:1px solid rgba(255,255,255,.05); }
+  .ph-ico{ width:30px; height:30px; border-radius:10px; background:#17171b; display:flex; align-items:center; justify-content:center; font-size:13px; flex:none; }
+  .ph-txt{ flex:1; min-width:0; }
+  .ph-txt strong{ display:block; font-size:11.5px; font-weight:600; color:var(--text); }
+  .ph-txt em{ font-style:normal; font-size:9.5px; color:var(--text-mute); }
+  .ph-val{ font-size:11.5px; font-weight:700; color:var(--text); }
+  .ph-val.plus{ color:#4ade80; }
+  .ph-bar{ display:flex; align-items:center; justify-content:space-around; margin-top:10px; padding:8px 10px; border-radius:16px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.06); }
+  .ph-bar>span{ width:16px; height:16px; border-radius:5px; background:rgba(255,255,255,.14); }
+  .ph-bar .ph-fab{ width:34px; height:34px; border-radius:50%; background:var(--gold); color:#0a0a0c; font-size:19px; font-weight:700; display:flex; align-items:center; justify-content:center; margin-top:-20px; box-shadow:0 6px 18px -4px rgba(203,164,92,.6); }
+  .phone-glow{ position:absolute; inset:auto; width:340px; height:340px; border-radius:50%; background:radial-gradient(circle, rgba(203,164,92,.14) 0%, transparent 65%); z-index:0; }
+  @media (prefers-reduced-motion: no-preference){
+    .phone{ animation:ph-float 7s ease-in-out infinite; }
+    @keyframes ph-float{ 0%,100%{ transform:rotate(2.5deg) translateY(0);} 50%{ transform:rotate(2.5deg) translateY(-10px);} }
+  }
+
+  /* ── Steps ── */
+  .steps{ padding:72px 0 8px; }
+  /* Columns appear only when each card gets at least 260px, otherwise they stack.
+     (A fixed 3-column breakpoint crushed the cards at tablet widths.) */
+  .steps-row{ list-style:none; display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:16px; margin:0; padding:0; }
+  .steps-row li{
+    position:relative; background:var(--surface-1); border:1px solid var(--border);
+    border-radius:var(--radius-md); padding:26px 22px 22px;
+    border-top:3px solid var(--step-c, var(--gold));
+  }
+
+  .steps-row li:hover{ border-color:var(--border-strong); border-top-color:var(--step-c); }
+  .step-n{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:32px; height:32px; border-radius:10px; font-size:14px; font-weight:700;
+    background:color-mix(in srgb, var(--step-c, var(--gold)) 14%, transparent);
+    color:var(--step-c, var(--gold));
+    border:1px solid color-mix(in srgb, var(--step-c, var(--gold)) 35%, transparent);
+    margin-bottom:14px;
+  }
+  /* Stacked (mobile): number sits beside the title so cards stay short */
+  @media (max-width: 619px){
+    .steps-row li{ display:grid; grid-template-columns:32px 1fr; column-gap:14px; padding:18px 18px 16px; }
+    .step-n{ margin-bottom:0; }
+    .steps-row h3{ align-self:center; margin:0; }
+    .steps-row p{ grid-column:2; margin-top:6px; }
+  }
+  .steps-row h3{ font-size:16px; font-weight:700; margin:0 0 6px; letter-spacing:-.2px; }
+  .steps-row p{ font-size:14px; color:var(--text-dim); line-height:1.6; margin:0; }
+
+  /* ── Research stats band: the numbers ARE the show ── */
+  .stats-band{ padding: 8px 0 16px; }
+  .stats-row{
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:16px;
+  }
+  .stat{
+    text-align:left; padding:22px 20px 20px; border-radius:var(--radius-md);
+    background:var(--surface-1); border:1px solid var(--border);
+    border-top:3px solid var(--stat-c, var(--gold));
+    transition:transform .2s ease, border-color .2s ease;
+  }
+  .stat:hover{ transform:translateY(-3px); border-color:var(--border-strong); border-top-color:var(--stat-c, var(--gold)); }
+  .stat strong{ display:block; font-size:2rem; font-weight:800; letter-spacing:-0.03em; color:var(--stat-c, var(--gold-light)); }
+  .stat span{ display:block; margin-top:8px; font-size:0.88rem; color:var(--text-dim); line-height:1.55; }
+  .stat sup{ color:var(--text-mute); }
+
+
+  /* ── Why tracking works ── */
+  .why-section{ padding-bottom:64px; }
+  .why-lede{ margin-top:18px; color:var(--text-dim); font-size:1.02rem; }
+  .why-grid{
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:18px;
+    max-width:1020px; margin:0 auto;
+  }
+  .why-card{
+    background:var(--surface-1); border:1px solid var(--border); border-radius:var(--radius-md);
+    padding:26px 24px;
+  }
+  .why-card:hover{ border-color:var(--border-strong); }
+  .why-card{ border-top:3px solid var(--why-c, var(--gold)); }
+
+  .why-card h3{ font-size:1.05rem; font-weight:700; margin-bottom:10px; color:var(--why-c, var(--gold-light)); }
+  .why-card p{ font-size:0.95rem; color:var(--text-dim); line-height:1.65; }
+  .why-sources{ max-width:1020px; margin:22px auto 0; font-size:0.78rem; color:var(--text-mute); line-height:1.6; }
+
+  /* ── Light mode ── */
+  html.light{
+    --bg: #F7F5F0;
+    --bg-alt: #F0EDE6;
+    --surface-1: #FFFFFF;
+    --surface-2: #F3F0E9;
+    --surface-3: #EAE6DC;
+    --border: rgba(120,90,40,0.15);
+    --border-strong: rgba(120,90,40,0.32);
+    --text: #211B10;
+    --text-dim: #5D5648;
+    --text-mute: #92897A;
+    --gold: #A87F3D;
+    --gold-light: #8F6E39;
+    --gold-dark: #6E5426;
+    --teal: #148F6B;
+    --blue: #2F6FB0;
+    --rose: #BE5847;
+    --shadow-gold: 0 8px 26px -10px rgba(168,127,61,0.45);
+    color-scheme: light;
+  }
+  html.light body{ background:var(--bg); color:var(--text); }
+  html.light header.site{ background: rgba(247,245,240,0.82); }
+  html.light .hero::before{ background: radial-gradient(closest-side, rgba(168,127,61,0.14), rgba(168,127,61,0.04) 55%, transparent 75%); }
+  html.light .btn-primary{ background: linear-gradient(180deg, #CBA45C, #A87F3D); color:#1C1406; }
+  html.light .skip-link{ color:#FFFFFF; }
+  /* The phone mockup stays a dark device: it reads as hardware, and shows the
+     app the way most users will see it. Add a soft ring so it sits well on paper. */
+  html.light .phone{ box-shadow:0 0 0 6px #E4E0D6, 0 30px 60px -18px rgba(60,45,20,.35), 0 0 60px -30px rgba(168,127,61,.4); }
+  html.light .phone-glow{ background: radial-gradient(circle, rgba(168,127,61,.12) 0%, transparent 65%); }
+
+  /* ── Mode toggle button ── */
+  .mode-toggle{
+    width:40px; height:40px; border-radius:12px; flex:none;
+    display:inline-flex; align-items:center; justify-content:center;
+    background:var(--surface-2); border:1px solid var(--border);
+    color:var(--text-dim); cursor:pointer; transition:color .2s, border-color .2s, transform .15s;
+  }
+  .mode-toggle:hover{ color:var(--gold-light); border-color:var(--border-strong); }
+  .mode-toggle:active{ transform:scale(.92); }
+  .mode-toggle .ico-sun{ display:none; }
+  html.light .mode-toggle .ico-sun{ display:block; }
+  html.light .mode-toggle .ico-moon{ display:none; }
+</style>
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site">
+  <div class="wrap nav-row">
+    <a href="#top" class="wordmark nav-wordmark" aria-label="Lucid home">
+      <span class="dot" aria-hidden="true"></span>LUCID
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#features">Features</a>
+      <a href="#why">Why track?</a>
+      <a href="#privacy">Privacy</a>
+      <a href="#pricing">Pricing</a>
+    </nav>
+    <div class="nav-cta-wrap">
+      <button type="button" class="mode-toggle" id="mode-toggle" aria-label="Switch between light and dark mode" title="Light / dark mode">
+        <svg class="ico-moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        <svg class="ico-sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+      <a href="#" class="btn btn-primary btn-sm js-cta">Get started free</a>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+  <div id="top"></div>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="wrap hero-cols">
+      <div class="hero-copy">
+        <span class="eyebrow">Stop paying the distraction tax</span>
+        <h1>Track your money. Without handing it to <span class="accent">Big Tech</span>.</h1>
+        <p class="hero-sub">A private finance tracker for you and your family. Your data stays on your device or in your own Google account. Never on our servers, never sold, never seen.</p>
+        <div class="hero-actions">
+          <a href="#" class="btn btn-primary js-cta">Get started free →</a>
+          <a href="#privacy" class="btn btn-secondary">How your data stays private</a>
+        </div>
+        <div class="trust-chips">
+          <span class="chip c-clarity">No account needed</span>
+          <span class="chip c-clarity">Works offline</span>
+          <span class="chip c-money">Free forever</span>
+          <span class="chip c-growth">No ads, no data selling</span>
+        </div>
+      </div>
+      <div class="hero-visual" aria-hidden="true">
+        <div class="phone">
+          <div class="phone-notch"></div>
+          <div class="ph-top">
+            <div>
+              <div class="ph-greet">Good evening,</div>
+              <div class="ph-name">Alex</div>
+            </div>
+            <span class="ph-mark"><svg viewBox="0 0 64 64" width="18" height="18"><circle cx="32" cy="32" r="19" fill="none" stroke="currentColor" stroke-width="5"/><circle cx="32" cy="32" r="7" fill="currentColor"/></svg></span>
+          </div>
+          <div class="ph-hero">
+            <div class="ph-lab">Balance</div>
+            <div class="ph-amt">$4,213.80</div>
+            <div class="ph-per">July 2026</div>
+            <div class="ph-stats">
+              <div><span class="dot inc"></span>Income <strong>$2,400</strong></div>
+              <div><span class="dot exp"></span>Spent <strong>$1,186</strong></div>
+            </div>
+          </div>
+          <div class="ph-sec">Recent activity</div>
+          <div class="ph-tx"><span class="ph-ico">🛒</span><div class="ph-txt"><strong>Woolworths</strong><em>Food</em></div><span class="ph-val">-$86.20</span></div>
+          <div class="ph-tx"><span class="ph-ico">⛽</span><div class="ph-txt"><strong>Ampol</strong><em>Transport ▸ Petrol</em></div><span class="ph-val">-$62.40</span></div>
+          <div class="ph-tx"><span class="ph-ico">💼</span><div class="ph-txt"><strong>Salary</strong><em>Income</em></div><span class="ph-val plus">+$1,200</span></div>
+          <div class="ph-bar">
+            <span></span><span></span><span class="ph-fab">+</span><span></span><span></span>
+          </div>
+        </div>
+        <div class="phone-glow"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Research stats band -->
+  <section class="stats-band" aria-label="Research on money stress">
+    <div class="wrap">
+      <div class="stats-row">
+        <div class="stat c-leak"><strong>6 in 10</strong><span>adults say money is their number one source of stress</span></div>
+        <div class="stat c-clarity"><strong>6 hrs / week</strong><span>lost at work to money worries by people with no savings buffer<sup>1</sup></span></div>
+        <div class="stat c-growth"><strong>+21%</strong><span>higher financial well-being with just a $2,000 emergency cushion<sup>1</sup></span></div>
+        <div class="stat c-money"><strong>~$200 / yr</strong><span>wasted on subscriptions people forgot they were paying for<sup>2</sup></span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why tracking works -->
+  <section id="why" class="why-section">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="section-label">Why track at all?</span>
+        <h2>Money stress has a price. Seeing clearly removes it.</h2>
+        <p class="why-lede">The research is consistent: it is not being rich that makes people calm about money. It is knowing exactly where they stand. Three findings shaped how Lucid works.</p>
+      </div>
+      <div class="why-grid">
+        <article class="why-card c-clarity">
+          <h3>The distraction tax</h3>
+          <p>Vanguard found workers without an emergency buffer spend over six hours a week distracted by money at work. Four times more than colleagues with just $2,000 set aside. Lucid's home screen answers "where do I stand?" in one glance, so the question stops following you around.</p>
+        </article>
+        <article class="why-card c-leak">
+          <h3>The subscription leak</h3>
+          <p>The average person pays around $90 a month in subscriptions and wastes nearly $200 a year on ones they never use. Lucid's recurring-bills view lists every repeating charge in one place, so nothing quietly drains your account for months unnoticed.</p>
+        </article>
+        <article class="why-card c-growth">
+          <h3>The $2,000 tipping point</h3>
+          <p>A cushion of just $2,000 lifts measured financial well-being by 21 percent. It is the single cheapest happiness upgrade in personal finance. Lucid's savings goals track your progress toward it and celebrate when you arrive.</p>
+        </article>
+      </div>
+      <p class="why-sources"><sup>1</sup> Vanguard emergency-savings research. <sup>2</sup> CNET / CNBC reporting on unused subscriptions. Figures are averages from published studies, not guarantees.</p>
+    </div>
+  </section>
+
+  <!-- Set up in three steps -->
+  <section class="steps">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="section-label">Getting started</span>
+        <h2>Up and running in three steps.</h2>
+      </div>
+      <ol class="steps-row">
+        <li class="c-money"><span class="step-n">1</span><h3>Open Lucid</h3><p>It runs in your browser and installs to your home screen. Nothing to download from an app store.</p></li>
+        <li class="c-clarity"><span class="step-n">2</span><h3>Pick where data lives</h3><p>On this device, or in a private Google Sheet that Lucid creates inside your own Drive.</p></li>
+        <li class="c-growth"><span class="step-n">3</span><h3>Start tracking</h3><p>Add your accounts and your first expense. Invite family with a code whenever you like.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section id="features">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="section-label">Features</span>
+        <h2>Everything you need. Nothing you have to give up.</h2>
+      </div>
+      <div class="feature-grid">
+
+        <div class="feature-card c-money">
+          <div class="feature-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg>
+          </div>
+          <h3>Spending, income &amp; budgets</h3>
+          <p>Log it in seconds, set monthly budgets, always know where your money went.</p>
+        </div>
+
+        <div class="feature-card c-growth">
+          <div class="feature-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="8" r="3.2"/><circle cx="17" cy="9" r="2.4"/><path d="M3 20c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/><path d="M15.2 14.8c2.6.3 4.8 2.3 4.8 5.2"/></svg>
+          </div>
+          <h3>Made for families</h3>
+          <p>One shared ledger everyone can see, with a private profile for each member.</p>
+        </div>
+
+        <div class="feature-card c-clarity">
+          <div class="feature-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 19h16"/></svg>
+          </div>
+          <h3>Import from your bank</h3>
+          <p>Bring in a CSV, OFX or QIF export. Duplicates are skipped automatically.</p>
+        </div>
+
+        <div class="feature-card c-growth">
+          <div class="feature-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2a5 5 0 0 1 5 5c0 2-1.2 3-2 4l-.5 3h-5L9 11c-.8-1-2-2-2-4a5 5 0 0 1 5-5z"/><path d="M9.5 20h5"/></svg>
+          </div>
+          <h3>It learns your habits</h3>
+          <p>Lucid remembers how you categorize and fills it in for you.</p>
+        </div>
+
+        <div class="feature-card c-clarity">
+          <div class="feature-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+          </div>
+          <h3>Private by design</h3>
+          <p>Your data lives on your device or your own Google Sheet. We can't see it.</p>
+        </div>
+
+        <div class="feature-card c-money">
+          <div class="feature-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l2.4 5.8L21 9.5l-4.8 4 1.5 6.5L12 16.8 6.3 20l1.5-6.5L3 9.5l6.6-.7z"/></svg>
+          </div>
+          <h3>Goals that feel good</h3>
+          <p>Streaks, milestones and a monthly wrap-up. Never guilt, never shame.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Privacy -->
+  <section id="privacy" class="privacy-section">
+    <div class="wrap">
+      <div class="privacy-panel">
+        <div class="privacy-head">
+          <span class="section-label">Privacy</span>
+          <h2>Your money data never touches our servers.</h2>
+          <p>Most finance apps make you link your bank login, then store everything on their servers. Lucid doesn't. There's no Lucid database, because there's no Lucid server. Your data has nowhere else to go.</p>
+        </div>
+        <div class="privacy-points">
+          <div class="privacy-point">
+            <span class="mark" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6 9 17l-5-5"/></svg>
+            </span>
+            <div>
+              <h3>Stored where you choose</h3>
+              <p>Only your device or a Sheet in your own Google Drive.</p>
+            </div>
+          </div>
+          <div class="privacy-point">
+            <span class="mark" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6 9 17l-5-5"/></svg>
+            </span>
+            <div>
+              <h3>No servers, no database</h3>
+              <p>We can't lose or leak what we never hold.</p>
+            </div>
+          </div>
+          <div class="privacy-point">
+            <span class="mark" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6 9 17l-5-5"/></svg>
+            </span>
+            <div>
+              <h3>Never sold, never ads</h3>
+              <p>Your information is not a product here.</p>
+            </div>
+          </div>
+          <div class="privacy-point">
+            <span class="mark" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6 9 17l-5-5"/></svg>
+            </span>
+            <div>
+              <h3>Leave anytime</h3>
+              <p>Export or delete in one tap.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Family sharing -->
+  <section id="family">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="section-label">Family sharing</span>
+        <h2>Track together, privately.</h2>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="num">1</div>
+          <h3>Create your family</h3>
+          <p>Set it up once; it lives in your own Google account.</p>
+        </div>
+        <div class="step">
+          <div class="num">2</div>
+          <h3>Share an invite link</h3>
+          <p>Send a private link (and optional password).</p>
+        </div>
+        <div class="step">
+          <div class="num">3</div>
+          <h3>Track together</h3>
+          <p>One shared ledger, each person with their own private profile + PIN.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section id="pricing">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="section-label">Pricing</span>
+        <h2>Free forever. Pro if you want more.</h2>
+        <p>Pro is entirely optional. Lucid is fully useful on the free plan.</p>
+      </div>
+
+      <div class="toggle-wrap" style="display:none">
+        <div class="toggle" role="group" aria-label="Pro billing period">
+          <button type="button" id="toggle-monthly" aria-pressed="true">Monthly</button>
+          <button type="button" id="toggle-yearly" aria-pressed="false">Yearly</button>
+        </div>
+      </div>
+
+      <div class="pricing-grid">
+        <div class="price-card">
+          <h3>Free</h3>
+          <div class="price">$0 <span class="unit">/ forever</span></div>
+          <p class="price-note">Everything you need to get started</p>
+          <ul>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>Unlimited spending &amp; income</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>Accounts, budgets &amp; goals</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>Bank import</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>Smart auto-categorization</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>Up to 2 family members</li>
+          </ul>
+          <a href="#" class="btn btn-secondary js-cta">Get started free</a>
+        </div>
+
+        <div class="price-card pro">
+          <h3>Pro</h3>
+          <div class="price"><span id="price-amount">$2.99</span> <span class="unit" id="price-unit">/ month</span></div>
+          <p class="price-note">Everything in Free, plus:</p>
+          <ul>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>Unlimited family members</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>One-time unlock code, no subscription</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>Every future Pro feature included</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>Supports independent, ad-free development</li>
+          </ul>
+          <span class="btn btn-primary" style="opacity:.55;pointer-events:none">Coming soon</span>
+        </div>
+      </div>
+
+      <p class="price-fineprint">Pro isn't available yet. Everything above the Free plan ships later as an optional upgrade. Lucid is fully useful free, forever.</p>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="section-label">FAQ</span>
+        <h2>Good questions.</h2>
+      </div>
+      <div class="faq-list">
+
+        <details class="faq-item">
+          <summary>Can you see my transactions?
+            <span class="faq-icon" aria-hidden="true">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>
+            </span>
+          </summary>
+          <div class="faq-body">No. No server, no database. Data lives only on your device or your own Google account.</div>
+        </details>
+
+        <details class="faq-item">
+          <summary>How do you make money, then?
+            <span class="faq-icon" aria-hidden="true">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>
+            </span>
+          </summary>
+          <div class="faq-body">Only from the optional Lucid Pro upgrade, never from your data. No ads, no data selling.</div>
+        </details>
+
+        <details class="faq-item">
+          <summary>Do I have to link my bank login?
+            <span class="faq-icon" aria-hidden="true">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>
+            </span>
+          </summary>
+          <div class="faq-body">Never. You add transactions yourself or import a file your bank lets you download.</div>
+        </details>
+
+        <details class="faq-item">
+          <summary>What happens if I stop using it?
+            <span class="faq-icon" aria-hidden="true">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>
+            </span>
+          </summary>
+          <div class="faq-body">Export or delete everything in one tap. It's in your own account, so it's always yours.</div>
+        </details>
+
+        <details class="faq-item">
+          <summary>Is it really free?
+            <span class="faq-icon" aria-hidden="true">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>
+            </span>
+          </summary>
+          <div class="faq-body">Yes, the core app is free forever. Pro is an optional upgrade.</div>
+        </details>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="final-cta">
+    <div class="wrap">
+      <span class="wordmark"><span class="dot" aria-hidden="true"></span>LUCID</span>
+      <h2>Your money, in focus.</h2>
+      <p>Start tracking in under a minute. Free, private, no account needed.</p>
+      <a href="#" class="btn btn-primary js-cta">Get started free →</a>
+      <p class="platforms">Works on iPhone, Android, and any browser.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <span class="wordmark"><span class="dot" aria-hidden="true"></span>LUCID</span>
+    <p class="tagline">Your money, in focus.</p>
+    <p class="legal">Lucid is free. We make money only from the optional Pro upgrade, never from your data.</p>
+    <p class="legal copyright">&copy; <span id="year"></span> Lucid.</p>
+  </div>
+</footer>
+
+<script>
+  // ── EDIT ME ──────────────────────────────────────────────
+  // The URL your "Get started free" buttons should open (web app / store link / etc).
+  const APP_URL = "https://evildeveloper-app.github.io/trial3.9/"; // update to your final app URL at launch
+  // ─────────────────────────────────────────────────────────
+
+  // Light / dark mode: saved choice wins, otherwise follow the system.
+  (function () {
+    var KEY = 'lucid_site_mode';
+    var saved = null;
+    try { saved = localStorage.getItem(KEY); } catch (e) {}
+    var light = saved ? saved === 'light'
+      : (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches);
+    document.documentElement.classList.toggle('light', light);
+    var btn = document.getElementById('mode-toggle');
+    if (btn) btn.addEventListener('click', function () {
+      var isLight = document.documentElement.classList.toggle('light');
+      try { localStorage.setItem(KEY, isLight ? 'light' : 'dark'); } catch (e) {}
+    });
+  })();
+
+  document.querySelectorAll('.js-cta').forEach(function (el) {
+    el.setAttribute('href', APP_URL);
+  });
+
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // Pricing toggle
+  (function () {
+    const MONTHLY = { amount: "$2.99", unit: "/ month" };
+    const YEARLY  = { amount: "$24",   unit: "/ year"  };
+
+    const monthlyBtn = document.getElementById('toggle-monthly');
+    const yearlyBtn = document.getElementById('toggle-yearly');
+    const amountEl = document.getElementById('price-amount');
+    const unitEl = document.getElementById('price-unit');
+
+    function setPeriod(period) {
+      const data = period === 'yearly' ? YEARLY : MONTHLY;
+      amountEl.textContent = data.amount;
+      unitEl.textContent = data.unit;
+      monthlyBtn.setAttribute('aria-pressed', String(period === 'monthly'));
+      yearlyBtn.setAttribute('aria-pressed', String(period === 'yearly'));
+    }
+
+    monthlyBtn.addEventListener('click', function () { setPeriod('monthly'); });
+    yearlyBtn.addEventListener('click', function () { setPeriod('yearly'); });
+  })();
+
+  // Only one FAQ item open at a time
+  document.querySelectorAll('.faq-item').forEach(function (item) {
+    item.addEventListener('toggle', function () {
+      if (item.open) {
+        document.querySelectorAll('.faq-item').forEach(function (other) {
+          if (other !== item) other.open = false;
+        });
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
